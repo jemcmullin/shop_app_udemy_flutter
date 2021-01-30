@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 
 import '../screens/product_item_detail_screen.dart';
-import '../models/product.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
+  final String id;
+  final String title;
+  final String imageUrl;
 
-  const ProductItem({Key key, this.product}) : super(key: key);
+  const ProductItem({Key key, this.id, this.title, this.imageUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GridTile(
       child: GestureDetector(
-        onTap: () => Navigator.of(context).pushNamed(
-            ProductItemDetailScreen.routeName,
-            arguments: product.id),
+        onTap: () => Navigator.of(context)
+            .pushNamed(ProductItemDetailScreen.routeName, arguments: id),
         child: Image.network(
-          product.imageUrl,
+          imageUrl,
           fit: BoxFit.cover,
         ),
       ),
       footer: GridTileBar(
         backgroundColor: Colors.black54,
-        title: Text(product.title),
+        title: Text(title),
         leading: IconButton(
           icon: Icon(Icons.favorite),
           color: Theme.of(context).accentColor,
