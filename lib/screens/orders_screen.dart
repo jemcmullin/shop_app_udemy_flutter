@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/widgets/order_item_card.dart';
+
+import '../widgets/app_drawer.dart';
+import '../widgets/order_item_card.dart';
 import '../providers/orders_provider.dart';
 
 class OrdersScreen extends StatelessWidget {
@@ -10,11 +12,19 @@ class OrdersScreen extends StatelessWidget {
     final orderData = Provider.of<Orders>(context);
     return Scaffold(
         appBar: AppBar(title: Text('Orders')),
-        body: Expanded(
-            child: ListView.builder(
-          itemCount: orderData.orders.length,
-          itemBuilder: (context, index) =>
-              OrderItemCard(orderData.orders[index]),
-        )));
+        drawer: AppDrawer(),
+        body: Column(
+          children: [
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: orderData.orders.length,
+                itemBuilder: (context, index) =>
+                    OrderItemCard(orderData.orders[index]),
+              ),
+            )),
+          ],
+        ));
   }
 }
