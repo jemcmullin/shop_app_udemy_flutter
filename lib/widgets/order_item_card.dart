@@ -51,7 +51,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
                                 style: TextStyle(fontSize: 15),
                               ),
                               Text(
-                                '\$${product.price} x ${product.quatity}',
+                                '\$${product.price} x ${product.quantity}',
                                 style: TextStyle(color: Colors.grey),
                               ),
                             ],
