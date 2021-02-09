@@ -50,6 +50,29 @@ class CartItemCard extends StatelessWidget {
           ),
         ),
       ),
+      confirmDismiss: (_) {
+        return showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text('Please Confirm'),
+                  content: Text('Remove this item from the cart?'),
+                  actions: [
+                    TextButton(
+                      child:
+                          Text('No', style: TextStyle(color: Colors.grey[300])),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                    TextButton(
+                      child: Text('YES'),
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  ],
+                ));
+      },
     );
   }
 }
