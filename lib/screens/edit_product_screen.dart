@@ -16,11 +16,38 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _productHandler = <String, String>{};
+  var _initValues = {
+    'title': '',
+    'price': '',
+    'description': '',
+  };
+  var isInit = true;
+  Product _editingProduct;
 
   @override
   void initState() {
     super.initState();
     _urlEntryFocus.addListener(_urlEntryListener);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isInit) {
+      final _editingId =
+          ModalRoute.of(context).settings.arguments as String; //id of product
+      if (_editingId != null) {
+        _editingProduct =
+            Provider.of<Products>(context, listen: false).findById(_editingId);
+        _initValues = {
+          'title': _editingProduct.title,
+          'price': _editingProduct.price.toString(),
+          'description': _editingProduct.description,
+        };
+        _imageController.text = _editingProduct.imageUrl;
+      }
+    }
+    isInit = false;
   }
 
   @override
@@ -45,14 +72,29 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _formKey.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(
-      Product(
-          id: null,
+    if (_editingProduct == null) {
+      Provider.of<Products>(context, listen: false).addProduct(
+        Product(
+            id: null,
+            title: _productHandler['title'],
+            description: _productHandler['description'],
+            price: double.parse(_productHandler['price']),
+            imageUrl: _productHandler['imageUrl']),
+      );
+    } else {
+      Provider.of<Products>(context, listen: false).updateProduct(
+        _editingProduct.id,
+        Product(
+          id: _editingProduct.id,
           title: _productHandler['title'],
           description: _productHandler['description'],
           price: double.parse(_productHandler['price']),
-          imageUrl: _productHandler['imageUrl']),
-    );
+          imageUrl: _productHandler['imageUrl'],
+          isFavorite: _editingProduct.isFavorite,
+        ),
+      );
+    }
+
     Navigator.of(context).pop();
   }
 
@@ -77,6 +119,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 children: [
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Title'),
+                    initialValue: _initValues['title'],
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (value) =>
                         FocusScope.of(context).requestFocus(_priceFocus),
@@ -90,6 +133,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Price'),
+                    initialValue: _initValues['price'],
                     textInputAction: TextInputAction.next,
                     keyboardType:
                         TextInputType.numberWithOptions(decimal: true),
@@ -111,6 +155,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Description'),
+                    initialValue: _initValues['description'],
                     maxLines: 3,
                     keyboardType: TextInputType.multiline,
                     focusNode: _descriptionFocus,
