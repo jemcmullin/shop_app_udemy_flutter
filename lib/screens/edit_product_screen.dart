@@ -67,7 +67,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -77,32 +77,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editingProduct == null) {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(
-        Product(
-            id: null,
-            title: _productHandler['title'],
-            description: _productHandler['description'],
-            price: double.parse(_productHandler['price']),
-            imageUrl: _productHandler['imageUrl']),
-      )
-          .catchError((error) {
-        return showDialog<Null>(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: Text('An Error Occured'),
-                  content: Text('Something went wrong!'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('OK'),
-                    ),
-                  ],
-                ));
-      }).then((_) {
+      try {
+        await Provider.of<Products>(context, listen: false).addProduct(
+          Product(
+              id: null,
+              title: _productHandler['title'],
+              description: _productHandler['description'],
+              price: double.parse(_productHandler['price']),
+              imageUrl: _productHandler['imageUrl']),
+        );
+      } catch (error) {
+        await showDialog<Null>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('An Error Occured'),
+            content: Text('Something went wrong!'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } finally {
         setState(() => _isLoading = false);
         Navigator.of(context).pop();
-      });
+      }
     } else {
       Provider.of<Products>(context, listen: false).updateProduct(
         _editingProduct.id,
