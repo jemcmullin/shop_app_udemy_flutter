@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 import 'dart:convert';
 
 import 'product_provider.dart';
@@ -105,17 +106,50 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String productId, Product updateProduct) {
+  Future<void> updateProduct(String productId, Product updateProduct) async {
     final productIndex =
         _items.indexWhere((product) => product.id == productId);
     if (productIndex != null) {
+      final url =
+          'https://flutter-shop-app-021821-default-rtdb.firebaseio.com/products/$productId.json';
+      try {
+        final response = await http.patch(
+          url,
+          body: json.encode({
+            'title': updateProduct.title,
+            'price': updateProduct.price,
+            'description': updateProduct.description,
+            'imageUrl': updateProduct.imageUrl,
+          }),
+        );
+        print('Update: ${response.statusCode}');
+      } catch (error) {
+        print(error);
+        throw (error);
+      }
       _items[productIndex] = updateProduct;
     }
     notifyListeners();
   }
 
-  void removeProduct(String productId) {
+  Future<void> removeProduct(String productId) {
+    final url =
+        'https://flutter-shop-app-021821-default-rtdb.firebaseio.com/products/$productId.json';
+    final productIndex =
+        _items.indexWhere((product) => product.id == productId);
+    var existingProduct = _items[productIndex];
     _items.removeWhere((product) => product.id == productId);
     notifyListeners();
+    return http.delete(url).then((response) {
+      if (response.statusCode >= 400) {
+        throw HttpException('Server request Delete failed');
+      }
+      existingProduct = null;
+    }).catchError((error) {
+      print(error);
+      _items.insert(productIndex, existingProduct);
+      notifyListeners();
+      throw (error);
+    });
   }
 }

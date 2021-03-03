@@ -100,12 +100,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      } finally {
-        setState(() => _isLoading = false);
-        Navigator.of(context).pop();
       }
+      // } finally {
+      //   setState(() => _isLoading = false);
+      //   Navigator.of(context).pop();
+      // }
     } else {
-      Provider.of<Products>(context, listen: false).updateProduct(
+      await Provider.of<Products>(context, listen: false).updateProduct(
         _editingProduct.id,
         Product(
           id: _editingProduct.id,
@@ -116,9 +117,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           isFavorite: _editingProduct.isFavorite,
         ),
       );
-      setState(() => _isLoading = false);
-      Navigator.of(context).pop();
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
