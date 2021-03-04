@@ -63,12 +63,12 @@ class Products with ChangeNotifier {
       final List<Product> loadedProductsHandler = [];
       extractedData.forEach((key, productData) {
         loadedProductsHandler.add(Product(
-          id: key,
-          title: productData['title'],
-          description: productData['description'],
-          price: productData['price'],
-          imageUrl: productData['imageUrl'],
-        ));
+            id: key,
+            title: productData['title'],
+            description: productData['description'],
+            price: productData['price'],
+            imageUrl: productData['imageUrl'],
+            isFavorite: productData['isFavorite']));
       });
       _items = loadedProductsHandler;
       notifyListeners();

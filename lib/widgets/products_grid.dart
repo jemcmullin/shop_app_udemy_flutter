@@ -21,12 +21,6 @@ class ProductsGrid extends StatelessWidget {
         value: products[index],
         child: ProductItem(),
       ),
-      // ProductItem(
-      //   key: Key(products[index].id),
-      //   id: products[index].id,
-      //   title: products[index].title,
-      //   imageUrl: products[index].imageUrl,
-
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 3 / 2,
         crossAxisCount: 2,

@@ -37,7 +37,14 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               color: Theme.of(context).accentColor,
-              onPressed: () => product.toggleFavorite(),
+              onPressed: () async {
+                try {
+                  await product.toggleFavorite();
+                } catch (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Favorite Failed to Set!')));
+                }
+              },
             ),
           ),
           trailing: IconButton(
