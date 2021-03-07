@@ -67,24 +67,27 @@ class _CartBodyState extends State<CartBody> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        try {
-                          await Provider.of<Orders>(context, listen: false)
-                              .addOrder(
-                            cartValuesList,
-                            cart.amountTotal,
-                          );
-                          cart.clearCart();
-                        } catch (error) {
-                          throw (error); //Unhandled
-                        }
-                        setState(() {
-                          _isLoading = false;
-                        });
-                      },
+                      onPressed: cart.amountTotal <= 0
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              try {
+                                await Provider.of<Orders>(context,
+                                        listen: false)
+                                    .addOrder(
+                                  cartValuesList,
+                                  cart.amountTotal,
+                                );
+                                cart.clearCart();
+                              } catch (error) {
+                                throw (error); //Unhandled
+                              }
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            },
                     ),
                   ],
                 ),
