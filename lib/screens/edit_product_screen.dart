@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/products_provider.dart';
+import '../components/projectCircularProgress.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -137,7 +138,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ],
         ),
         body: _isLoading
-            ? CircularProgressIndicator.adaptive()
+            ? ProjectCircularProgress()
             : Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(

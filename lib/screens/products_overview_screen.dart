@@ -7,6 +7,7 @@ import '../providers/cart_provider.dart';
 import '../widgets/badge.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/app_drawer.dart';
+import '../components/projectCircularProgress.dart';
 
 enum FilterOptions {
   All,
@@ -91,11 +92,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: AppDrawer(),
       body: _isLoading
-          ? Container(
-              width: double.infinity,
-              height: 100,
-              alignment: Alignment.center,
-              child: CircularProgressIndicator.adaptive(),
+          ? ProjectCircularProgress(
+              customColor: Colors.white,
             )
           : ProductsGrid(_showOnlyFavorites),
     );
