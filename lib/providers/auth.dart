@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import '../keys.Dart';
 
 class Auth extends ChangeNotifier {
-  static const _apiKey = 'AIzaSyCp67lIft2Vw1xn8ScjyovrQRTpKxMPKaw';
+  final _apiKey = Keys.apiKey;
   String _token;
   DateTime _expiryTime;
   String _userId;
