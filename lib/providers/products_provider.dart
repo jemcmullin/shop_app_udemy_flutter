@@ -41,8 +41,9 @@ class Products with ChangeNotifier {
   //   ),
   // ];
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -57,7 +58,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url =
+    var url =
         'https://flutter-shop-app-021821-default-rtdb.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
@@ -65,15 +66,21 @@ class Products with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
+      url =
+          'https://flutter-shop-app-021821-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+      print(favoriteData);
       final List<Product> loadedProductsHandler = [];
       extractedData.forEach((key, productData) {
         loadedProductsHandler.add(Product(
-            id: key,
-            title: productData['title'],
-            description: productData['description'],
-            price: productData['price'],
-            imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite']));
+          id: key,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          imageUrl: productData['imageUrl'],
+          isFavorite: favoriteData == null ? false : favoriteData[key] ?? false,
+        ));
       });
       _items = loadedProductsHandler;
       notifyListeners();
@@ -94,7 +101,6 @@ class Products with ChangeNotifier {
           'price': product.price,
           'description': product.description,
           'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
         }),
       );
       final newProduct = Product(
